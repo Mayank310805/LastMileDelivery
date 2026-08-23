@@ -1,0 +1,239 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String   @unique
+  passwordHash String
+  role         String   // CUSTOMER|AGENT|ADMIN
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  deliveryAgent     DeliveryAgent?
+  addresses         Address[]          @relation("UserAddresses")
+  customerOrders    Order[]            @relation("CustomerOrders")
+  createdOrders     Order[]            @relation("CreatedOrders")
+  assignedOrders    OrderAssignment[]  @relation("AssignedBy")
+  historyChanges    TrackingHistory[]  @relation("ChangedBy")
+  requestedReschedules Reschedule[]    @relation("RequestedBy")
+  notifications     Notification[]     @relation("UserNotifications")
+  refreshTokens     RefreshToken[]
+}
+
+model DeliveryAgent {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  isAvailable          Boolean   @default(false)
+  currentZoneId        String?
+  currentLat           Float?
+  currentLng           Float?
+  lastLocationUpdateAt DateTime?
+  maxConcurrentOrders  Int       @default(5)
+  lastAssignedAt       DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  user                 User      @relation(fields: [userId], references: [id])
+  currentZone          Zone?     @relation(fields: [currentZoneId], references: [id])
+  currentOrders        Order[]   @relation("CurrentAgent")
+  assignments          OrderAssignment[]
+}
+
+model Zone {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  areas             Area[]
+  deliveryAgents    DeliveryAgent[]
+  pickupOrders      Order[]         @relation("PickupZone")
+  dropOrders        Order[]         @relation("DropZone")
+}
+
+model Area {
+  id          String   @id @default(cuid())
+  name        String
+  pincode     String   @unique
+  city        String
+  state       String
+  zoneId      String
+  centroidLat Float?
+  centroidLng Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  zone        Zone     @relation(fields: [zoneId], references: [id])
+  addresses   Address[]
+}
+
+model Address {
+  id             String   @id @default(cuid())
+  contactName    String
+  contactPhone   String
+  line1          String
+  line2          String?
+  city           String
+  state          String
+  pincode        String
+  areaId         String?
+  createdByUserId String
+  createdAt      DateTime @default(now())
+
+  area           Area?    @relation(fields: [areaId], references: [id])
+  createdByUser  User     @relation("UserAddresses", fields: [createdByUserId], references: [id])
+  pickupOrders   Order[]  @relation("PickupAddress")
+  dropOrders     Order[]  @relation("DropAddress")
+}
+
+model RateCard {
+  id                   String   @id @default(cuid())
+  orderType            String   // B2B|B2C
+  zoneRelation         String   // INTRA|INTER
+  basePrice            Float
+  baseWeightKg         Float
+  additionalPricePerKg Float
+  minCharge            Float
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model CodConfig {
+  id             String   @id @default(cuid())
+  orderType      String   // B2B|B2C
+  surchargeType  String   // FLAT|PERCENTAGE
+  value          Float
+  minCharge      Float    @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Order {
+  id                    String    @id @default(cuid())
+  orderNumber           String    @unique
+  customerId            String
+  createdByUserId       String
+  pickupAddressId       String
+  dropAddressId         String
+  orderType             String    // B2B|B2C
+  paymentType           String    // PREPAID|COD
+  lengthCm              Float
+  breadthCm             Float
+  heightCm              Float
+  actualWeightKg        Float
+  volumetricWeightKg    Float
+  billableWeightKg      Float
+  pickupZoneId          String
+  dropZoneId            String
+  zoneRelation          String    // INTRA|INTER
+  baseCharge            Float
+  codSurcharge          Float
+  totalCharge           Float
+  status                String    @default("CREATED")
+  scheduledDeliveryDate DateTime?
+  currentAgentId        String?
+  deliveredAt           DateTime?
+  rescheduleCount       Int       @default(0)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  customer              User      @relation("CustomerOrders", fields: [customerId], references: [id])
+  createdByUser         User      @relation("CreatedOrders", fields: [createdByUserId], references: [id])
+  pickupAddress         Address   @relation("PickupAddress", fields: [pickupAddressId], references: [id])
+  dropAddress           Address   @relation("DropAddress", fields: [dropAddressId], references: [id])
+  pickupZone            Zone      @relation("PickupZone", fields: [pickupZoneId], references: [id])
+  dropZone              Zone      @relation("DropZone", fields: [dropZoneId], references: [id])
+  currentAgent          DeliveryAgent? @relation("CurrentAgent", fields: [currentAgentId], references: [id])
+
+  assignments           OrderAssignment[]
+  trackingHistory       TrackingHistory[]
+  reschedules           Reschedule[]
+}
+
+model OrderAssignment {
+  id              String   @id @default(cuid())
+  orderId         String
+  agentId         String
+  assignedByUserId String
+  assignmentType  String   // MANUAL|AUTO
+  assignedAt      DateTime @default(now())
+  unassignedAt    DateTime?
+  isActive        Boolean  @default(true)
+
+  order           Order    @relation(fields: [orderId], references: [id])
+  agent           DeliveryAgent @relation(fields: [agentId], references: [id])
+  assignedByUser  User     @relation("AssignedBy", fields: [assignedByUserId], references: [id])
+}
+
+model TrackingHistory {
+  id              String   @id @default(cuid())
+  orderId         String
+  previousStatus  String?
+  newStatus       String
+  changedByUserId String
+  actorRole       String
+  remarks         String?
+  locationNote    String?
+  isOverride      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  order           Order    @relation(fields: [orderId], references: [id])
+  changedByUser   User     @relation("ChangedBy", fields: [changedByUserId], references: [id])
+
+  @@index([orderId, createdAt])
+}
+
+model Reschedule {
+  id                     String    @id @default(cuid())
+  orderId                String
+  requestedByUserId      String
+  previousScheduledDate  DateTime?
+  newScheduledDate       DateTime
+  failureReasonSnapshot  String?
+  notes                  String?
+  createdAt              DateTime  @default(now())
+
+  order                  Order     @relation(fields: [orderId], references: [id])
+  requestedByUser        User      @relation("RequestedBy", fields: [requestedByUserId], references: [id])
+}
+
+model Notification {
+  id               String   @id @default(cuid())
+  userId           String
+  orderId          String?
+  channel          String   // EMAIL|SMS
+  eventType        String
+  recipient        String
+  subject          String?
+  message          String
+  status           String   @default("PENDING") // PENDING|SENT|FAILED
+  providerResponse String?
+  retryCount       Int      @default(0)
+  createdAt        DateTime @default(now())
+  sentAt           DateTime?
+
+  user             User     @relation("UserNotifications", fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  tokenId   String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
