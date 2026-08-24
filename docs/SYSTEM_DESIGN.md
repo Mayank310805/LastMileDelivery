@@ -1,24 +1,79 @@
-# System Design & Architecture
+# LastMile Delivery — System Design & Architecture
 
-This document outlines the six core architectural decisions for the Last-Mile Delivery Tracker.
+This document provides a high-level overview of the core algorithmic components powering the LastMile logistics platform. It covers the billing logic, spatial routing, driver assignment, and exception handling systems.
+
+---
 
 ## 1. Rate Calculation Engine
-The rate engine employs a configurable `base_price` + `per_kg_beyond_base_weight` model, eschewing hardcoded weight slabs. Hardcoded slabs are brittle and require code changes for every pricing update. By defining a continuous linear curve beyond a free allowance (the base weight), the system supports infinite weights while remaining fully admin-configurable via four numeric fields per rate card: `base_price`, `base_weight_kg`, `additional_price_per_kg`, and `min_charge`. The pipeline computes volumetric weight, determines billable weight (the maximum of actual vs. volumetric), and applies the exact active rate card matching the order type (B2B/B2C) and zone relation (Intra/Inter).
 
-## 2. Zone Detection Approach
-Full geospatial polygon detection (geocoding) introduces external API dependencies, recurring costs, and point-in-polygon computational complexity. To maintain a deterministic, self-contained architecture, the system maps logical `Areas` (identified by a pincode) to `Zones`. Every address includes a pincode, which the system resolves against the database to determine its operational Zone. This approach guarantees 100% offline zone resolution, matches how actual Indian logistics rate cards are structured, and allows admins to control exact serviceability without relying on third-party map bounding boxes.
+The billing engine is responsible for generating accurate quotes dynamically based on dimensions, order type, and geographical topology.
+
+### Billable Weight Calculation
+The system calculates the **Volumetric Weight** using the standard logistics formula:
+```
+Volumetric Weight (kg) = (Length × Breadth × Height in cm) / 5000
+```
+The **Billable Weight** is strictly defined as `max(Actual Weight, Volumetric Weight)`.
+
+### Tiered Base Pricing
+Using the resolved zones (see below) and the order classification (B2B vs B2C), the engine looks up the active `RateCard`.
+The base charge is calculated as:
+1. Start with the `basePrice` (which covers up to `baseWeightKg`).
+2. If `Billable Weight > baseWeightKg`, apply the overage fee: 
+   `(Billable Weight - baseWeightKg) × additionalPricePerKg`
+3. Enforce the `minCharge` threshold.
+
+### COD Surcharges
+If the user selects Cash on Delivery (COD), the system queries the active `CodConfig`. The surcharge can be a `FLAT` rate or a `PERCENTAGE` of the base charge (while respecting a configured minimum COD threshold). The final price is the sum of the base charge and the COD surcharge.
+
+---
+
+## 2. Zone Detection & Spatial Relation
+
+Effective last-mile logistics relies on accurate grouping of delivery addresses into operational "Zones". 
+
+### Pincode Mapping
+When an order is created, the system extracts the `pincode` from both the Pickup and Drop addresses. It queries the `Area` table, which holds a strict many-to-one mapping of pincodes to dynamic `Zones` (e.g., "North Zone", "Metro Core").
+
+### Zone Relation (INTRA vs INTER)
+Once both the pickup and drop pincodes are resolved to their respective Zones, the routing relationship is determined:
+- **INTRA-Zone**: Pickup and drop belong to the exact same Zone ID. This is typically cheaper and requires fewer hubs.
+- **INTER-Zone**: Pickup and drop are in different Zones. This usually involves hub-to-hub transfer logistics and invokes higher pricing tiers on the Rate Card.
+
+---
 
 ## 3. Auto-Assignment Logic
-To optimize delivery dispatch, the auto-assignment algorithm executes inside a single database transaction using row-level constraints. It first filters for agents who are active, available, and below their `max_concurrent_orders` limit. If valid GPS coordinates exist for the pickup area and the agents, it computes the Haversine distance. However, because GPS updates are optional and often stale, the system heavily relies on a Zone-fallback path: it selects agents matching the order's pickup zone. Within the candidate pool, it load-balances by selecting the agent with the lowest active order count, using round-robin (oldest `last_assigned_at`) to break ties.
 
-## 4. Failed Delivery Handling
-Delivery failures are treated as a temporary suspension in the state machine, not an immediate terminal state. An agent marking an order as `FAILED` must supply a discrete failure reason enum (e.g., `CUSTOMER_UNAVAILABLE`). This pauses the fulfillment cycle, triggers an immediate customer notification with a call-to-action, and unlocks the Rescheduling flow. When a customer reschedules, the system inserts a tracking record, updates the `scheduled_delivery_date`, and re-injects the order into the auto-assignment algorithm as if it were a new order, ensuring it routes to the best available agent for the new date.
+The dispatch engine is designed to intelligently route orders to the best available delivery agent without human intervention.
 
-## 5. Database Architecture
-The application uses PostgreSQL (via Prisma ORM) designed for high normalization. Entities are strictly separated: `users` handle authentication and core details, while `delivery_agents` is a 1:1 extension table storing logistics-specific fields like availability and active load. The `tracking_history` table is strictly append-only, capturing every state mutation as a discrete row. This structure prevents data anomalies, ensures referential integrity (e.g., blocking zone deletion if areas remain mapped), and allows efficient querying for complex admin dashboards without relying on unstructured JSON blobs.
+### Capacity & Availability Filtering
+1. The engine fetches all agents where `isAvailable == true`.
+2. It calculates the active order count for each agent (orders in `ASSIGNED`, `PICKED_UP`, `IN_TRANSIT`, or `OUT_FOR_DELIVERY` states).
+3. Agents who have reached their `maxConcurrentOrders` threshold are aggressively filtered out.
 
-## 6. Status Tracking & Immutability
-Auditability is business-critical in logistics. To prevent unauthorized retroactive modifications to an order's lifecycle, immutability is enforced at three distinct layers:
-1. **API Layer**: No PUT, PATCH, or DELETE endpoints are exposed for tracking history.
-2. **ORM Layer**: The Prisma repository implementation exposes only a `create()` method for tracking entries.
-3. **Database Layer**: In production environments, the application database role is granted `INSERT` and `SELECT` privileges only for the `tracking_history` table. Even if the application logic is compromised, the database engine will reject `UPDATE` or `DELETE` statements against the audit trail.
+### Geospatial & Workload Prioritization
+The remaining candidates are placed into a selection pool with the following priorities:
+1. **Zone Matching (Primary Filter)**: The engine prioritizes agents whose `currentZoneId` strictly matches the order's `pickupZoneId`. If no agents are available in the local zone, it expands to the broader pool as a fallback.
+2. **Workload Balancing (Primary Sort)**: The candidates are sorted ascending by their current active order count. The agent carrying the lightest load is preferred.
+3. **Round-Robin Fallback (Secondary Sort)**: If multiple agents have the exact same workload, the engine sorts by `lastAssignedAt` (ascending), ensuring fair distribution of trips.
+
+Upon selection, the system updates the Order, writes an `OrderAssignment` trace, drops an immutable `TrackingHistory` log, and updates the agent's `lastAssignedAt` timestamp within a single atomic database transaction.
+
+---
+
+## 4. Failed Delivery & Exception Handling
+
+Delivery failures (e.g., customer unavailable, incorrect address) require strict operational guardrails and a seamless recovery experience.
+
+### State Transition to FAILED
+When an agent marks an order as failed on their mobile dashboard, they must supply a programmatic failure reason. The order status is transitioned to `FAILED`. 
+At this point, the UI immediately alerts the customer via a prominent, red warning banner on their dashboard, explaining the exact failure reason (e.g., "Customer Unavailable").
+
+### Rescheduling Constraints
+Customers are empowered to reschedule failed deliveries directly from the app. However, the system enforces the following constraints:
+1. **Max Attempts**: An order is strictly capped at a maximum of 3 rescheduling attempts. If `rescheduleCount >= 3`, the API blocks the request with a `MAX_RESCHEDULES_EXCEEDED` exception.
+2. **Re-routing**: When a customer confirms a new date, the system clears the `currentAgentId` and transitions the order to `RESCHEDULED`.
+3. **Dispatch Trigger**: The system immediately fires the `autoAssignAgent` routine to re-queue the package into the operational flow. 
+
+### Immutable Audit Logs
+Every step of the failure and recovery flow—the agent's failure declaration, the customer's reschedule request, and the system's reassignment—is permanently written to the `TrackingHistory` ledger. This ensures that operations managers have complete visibility into the lifecycle of every exception.
