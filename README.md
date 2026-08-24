@@ -3,7 +3,7 @@
 A full-stack, enterprise-grade last-mile delivery tracking system designed for efficient order routing, agent assignment, and real-time tracking.
 
 ## Tech Stack
-- **Frontend**: React 18, Vite, TypeScript, Tailwind CSS v4, Lucide React, TanStack Query
+- **Frontend**: React 18, Vite, TypeScript, Custom Light/Dark SaaS Design System, Lucide React, TanStack Query
 - **Backend**: Node.js, Express, TypeScript, Prisma ORM, SQLite
 - **Authentication**: JWT (Access + Refresh tokens) with BCrypt hashing
 - **Architecture**: Role-Based Access Control (Admin, Agent, Customer)
@@ -12,6 +12,7 @@ A full-stack, enterprise-grade last-mile delivery tracking system designed for e
 - **Zone & Area Management**: Geospatial-aware area mappings and dynamic zones.
 - **Advanced Rate Engine**: B2B/B2C, Intra/Inter zone logic, Volumetric vs Actual weight comparisons.
 - **Algorithmic Assignment**: Auto-assignment based on GPS proximity, workload capacity, and zone-matching fallbacks.
+- **Modern UI/UX & Dark Mode**: A stunning, professional SaaS design system with native light/dark theme toggles, scroll animations, and rich generated imagery across all roles (Admin, Agent, Customer).
 - **Tracking & Notifications**: Granular order state machine, mock email/SMS push notifications.
 
 ---
