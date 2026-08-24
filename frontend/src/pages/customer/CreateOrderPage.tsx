@@ -86,47 +86,47 @@ export const CreateOrderPage = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className="animate-fade-in">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'linear-gradient(to right, rgba(59, 130, 246, 0.15), transparent)', padding: '1.5rem', borderRadius: '0.5rem', borderLeft: '4px solid var(--color-primary-500)', boxShadow: 'var(--shadow-sm)', ...(window.innerWidth >= 1024 ? { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' } : {}) }}>
+    <div className="flex flex-col gap-6 animate-fade-in">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-primary-50 to-transparent p-6 rounded-lg border-l-4 border-primary-500 shadow-sm">
         <div>
-          <button onClick={() => navigate(-1)} style={{ marginBottom: '1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-surface-500)', border: 'none', background: 'transparent', cursor: 'pointer', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-surface-900)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-surface-500)'}>
+          <button onClick={() => navigate(-1)} className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-surface-500 hover:text-surface-900 transition-colors">
             <ArrowLeft size={16} />
             Back
           </button>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'var(--color-surface-950)' }}>Create delivery order</h1>
-          <p style={{ marginTop: '0.5rem', fontSize: '1.125rem', color: 'var(--color-surface-600)' }}>Price the shipment, confirm the charge, and start auto-assignment.</p>
+          <h1 className="text-3xl font-bold text-surface-950">Create delivery order</h1>
+          <p className="mt-2 text-lg text-surface-600">Price the shipment, confirm the charge, and start auto-assignment.</p>
         </div>
-        <div className="glass-panel" style={{ padding: '1.25rem', textAlign: 'right' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-surface-500)' }}>Billable weight preview</p>
-          <p style={{ marginTop: '0.25rem', fontSize: '1.875rem', fontWeight: 800, color: 'var(--color-primary-600)' }}>{Math.max(Number(form.actualWeightKg), volumetricWeight).toFixed(2)} <span style={{ fontSize: '1.125rem' }}>kg</span></p>
-          <p style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Volumetric {volumetricWeight.toFixed(2)} kg</p>
+        <div className="glass-panel p-5 text-right bg-white shadow-sm rounded-xl border border-surface-200">
+          <p className="text-xs font-bold uppercase tracking-wider text-surface-500">Billable weight preview</p>
+          <p className="mt-1 text-3xl font-extrabold text-primary-600">{Math.max(Number(form.actualWeightKg), volumetricWeight).toFixed(2)} <span className="text-lg font-bold">kg</span></p>
+          <p className="text-sm font-medium text-surface-500 mt-1">Volumetric {volumetricWeight.toFixed(2)} kg</p>
         </div>
       </div>
 
-      <form onSubmit={quoteOrder} style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: window.innerWidth >= 1280 ? '1fr 360px' : '1fr' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <section className="glass-panel" style={{ boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid var(--color-surface-200)', paddingBottom: '1rem' }}>
-              <div style={{ borderRadius: '50%', background: 'var(--color-primary-50)', padding: '0.5rem', color: 'var(--color-primary-600)', boxShadow: 'var(--shadow-sm)' }}>
+      <form onSubmit={quoteOrder} className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6">
+        <div className="flex flex-col gap-6">
+          <section className="glass-panel p-6 shadow-sm rounded-xl border border-surface-200 bg-white">
+            <div className="mb-6 flex items-center gap-3 border-b border-surface-200 pb-4">
+              <div className="rounded-full bg-primary-50 p-2 text-primary-600 shadow-sm">
                 <MapPin size={20} />
               </div>
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-surface-950)' }}>Route details</h2>
-                <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Use seeded pincodes 600001, 600020, 400001, or 400020 for a working demo.</p>
+                <h2 className="text-xl font-bold text-surface-950">Route details</h2>
+                <p className="text-sm text-surface-500 mt-1">Use seeded pincodes 600001, 600020, 400001, or 400020 for a working demo.</p>
               </div>
             </div>
-            <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: window.innerWidth >= 1024 ? '1fr 1fr' : '1fr' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {(['pickupAddress', 'dropAddress'] as const).map((addressKey) => (
-                <div key={addressKey} style={{ borderRadius: '0.75rem', border: '1px solid var(--color-surface-200)', background: 'var(--color-surface-50)', padding: '1.25rem', boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.2)' }}>
-                  <h3 style={{ marginBottom: '1.25rem', fontSize: '0.875rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-primary-600)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ height: '0.5rem', width: '0.5rem', borderRadius: '50%', background: 'var(--color-primary-500)' }}></span>
+                <div key={addressKey} className="rounded-xl border border-surface-200 bg-surface-50 p-5 shadow-sm">
+                  <h3 className="mb-5 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary-600">
+                    <span className="h-2 w-2 rounded-full bg-primary-500"></span>
                     {addressKey === 'pickupAddress' ? 'Pickup' : 'Drop'} location
                   </h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div className="flex flex-col gap-4">
                     <Input label="Contact name" value={form[addressKey].contactName} onChange={(e) => updateAddress(addressKey, 'contactName', e.target.value)} required />
                     <Input label="Phone" value={form[addressKey].contactPhone} onChange={(e) => updateAddress(addressKey, 'contactPhone', e.target.value)} required />
                     <Input label="Address line" value={form[addressKey].line1} onChange={(e) => updateAddress(addressKey, 'line1', e.target.value)} required />
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="grid grid-cols-2 gap-4">
                       <Input label="City" value={form[addressKey].city} onChange={(e) => updateAddress(addressKey, 'city', e.target.value)} required />
                       <Input label="State" value={form[addressKey].state} onChange={(e) => updateAddress(addressKey, 'state', e.target.value)} required />
                     </div>
@@ -137,17 +137,17 @@ export const CreateOrderPage = () => {
             </div>
           </section>
 
-          <section className="glass-panel" style={{ boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid var(--color-surface-200)', paddingBottom: '1rem' }}>
-              <div style={{ borderRadius: '50%', background: 'var(--color-primary-50)', padding: '0.5rem', color: 'var(--color-primary-600)', boxShadow: 'var(--shadow-sm)' }}>
+          <section className="glass-panel p-6 shadow-sm rounded-xl border border-surface-200 bg-white">
+            <div className="mb-6 flex items-center gap-3 border-b border-surface-200 pb-4">
+              <div className="rounded-full bg-primary-50 p-2 text-primary-600 shadow-sm">
                 <Ruler size={20} />
               </div>
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-surface-950)' }}>Package and payment</h2>
-                <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Charges use max(actual weight, volumetric weight).</p>
+                <h2 className="text-xl font-bold text-surface-950">Package and payment</h2>
+                <p className="text-sm text-surface-500 mt-1">Charges use max(actual weight, volumetric weight).</p>
               </div>
             </div>
-            <div style={{ display: 'grid', gap: '1.25rem', gridTemplateColumns: window.innerWidth >= 768 ? 'repeat(3, 1fr)' : '1fr' }}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <Input label="Length (cm)" type="number" min="1" value={form.lengthCm} onChange={(e) => updateField('lengthCm', e.target.value)} required />
               <Input label="Breadth (cm)" type="number" min="1" value={form.breadthCm} onChange={(e) => updateField('breadthCm', e.target.value)} required />
               <Input label="Height (cm)" type="number" min="1" value={form.heightCm} onChange={(e) => updateField('heightCm', e.target.value)} required />
@@ -158,46 +158,46 @@ export const CreateOrderPage = () => {
           </section>
         </div>
 
-        <aside style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'sticky', top: '6rem', alignSelf: 'start' }}>
-          <div className="glass-panel" style={{ boxShadow: 'var(--shadow-lg)', border: '1px solid var(--color-primary-100)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid var(--color-surface-200)', paddingBottom: '1rem' }}>
-              <div style={{ borderRadius: '50%', background: 'var(--color-primary-50)', padding: '0.5rem', color: 'var(--color-primary-600)', boxShadow: 'var(--shadow-sm)' }}>
+        <aside className="sticky top-24 flex flex-col gap-5 self-start w-full">
+          <div className="glass-panel p-6 shadow-lg border border-primary-100 rounded-xl bg-white">
+            <div className="flex items-center gap-3 border-b border-surface-200 pb-4">
+              <div className="rounded-full bg-primary-50 p-2 text-primary-600 shadow-sm">
                 <Calculator size={20} />
               </div>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-surface-950)' }}>Quote summary</h2>
+              <h2 className="text-xl font-bold text-surface-950">Quote summary</h2>
             </div>
-            <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span style={{ color: 'var(--color-surface-500)', fontWeight: 500 }}>Base charge</span><strong style={{ fontSize: '1rem' }}>{quote ? `₹${quote.baseCharge?.toFixed(2)}` : '-'}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span style={{ color: 'var(--color-surface-500)', fontWeight: 500 }}>COD surcharge</span><strong style={{ fontSize: '1rem' }}>{quote ? `₹${quote.codSurcharge?.toFixed(2)}` : '-'}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span style={{ color: 'var(--color-surface-500)', fontWeight: 500 }}>Billable weight</span><strong style={{ fontSize: '1rem' }}>{quote ? `${quote.billableWeightKg} kg` : '-'}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span style={{ color: 'var(--color-surface-500)', fontWeight: 500 }}>Zone relation</span><strong style={{ fontSize: '1rem', padding: '0.25rem 0.5rem', background: 'var(--color-surface-100)', borderRadius: '0.375rem' }}>{quote?.zoneRelation || '-'}</strong></div>
-              <div style={{ borderTop: '1px solid var(--color-surface-200)', paddingTop: '1.25rem', marginTop: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 'bold', color: 'var(--color-surface-900)', fontSize: '1.125rem' }}>Total</span>
-                <strong style={{ fontSize: '1.875rem', color: 'var(--color-primary-600)' }}>{quote ? `₹${quote.totalCharge?.toFixed(2)}` : '₹0.00'}</strong>
+            <div className="mt-6 flex flex-col gap-4 text-sm">
+              <div className="flex justify-between items-center"><span className="text-surface-500 font-medium">Base charge</span><strong className="text-base">{quote ? `₹${quote.baseCharge?.toFixed(2)}` : '-'}</strong></div>
+              <div className="flex justify-between items-center"><span className="text-surface-500 font-medium">COD surcharge</span><strong className="text-base">{quote ? `₹${quote.codSurcharge?.toFixed(2)}` : '-'}</strong></div>
+              <div className="flex justify-between items-center"><span className="text-surface-500 font-medium">Billable weight</span><strong className="text-base">{quote ? `${quote.billableWeightKg} kg` : '-'}</strong></div>
+              <div className="flex justify-between items-center"><span className="text-surface-500 font-medium">Zone relation</span><strong className="text-base px-2 py-1 bg-surface-100 rounded-md">{quote?.zoneRelation || '-'}</strong></div>
+              <div className="border-t border-surface-200 pt-5 mt-1 flex justify-between items-center">
+                <span className="font-bold text-surface-900 text-lg">Total</span>
+                <strong className="text-3xl text-primary-600">{quote ? `₹${quote.totalCharge?.toFixed(2)}` : '₹0.00'}</strong>
               </div>
             </div>
-            <div style={{ marginTop: '2rem', display: 'grid', gap: '1rem' }}>
-              <Button type="submit" className="btn-secondary" isLoading={isQuoting} style={{ boxShadow: 'var(--shadow-md)', fontSize: '1rem', padding: '0.75rem' }}>
+            <div className="mt-8 grid gap-4">
+              <Button type="submit" className="btn-secondary shadow-sm text-base py-3" isLoading={isQuoting}>
                 <CreditCard size={18} />
                 Calculate quote
               </Button>
-              <Button type="button" disabled={!quote} isLoading={isCreating} onClick={createOrder} className="btn-primary" style={{ boxShadow: '0 10px 15px -3px rgba(20,184,166,0.3)', fontSize: '1rem', padding: '0.75rem' }}>
+              <Button type="button" disabled={!quote} isLoading={isCreating} onClick={createOrder} className="btn-primary shadow-lg shadow-primary-500/20 text-base py-3">
                 <PackageCheck size={18} />
                 Confirm order
               </Button>
             </div>
           </div>
           
-          <div style={{ borderRadius: '0.75rem', border: '1px solid var(--color-success-600)', background: 'rgba(16, 185, 129, 0.1)', padding: '1.25rem', fontSize: '0.875rem', color: 'var(--color-surface-300)', boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', color: 'var(--color-success-500)', marginBottom: '0.5rem' }}><CheckCircle2 size={18} /> Auto-assignment ready</div>
-            <p style={{ lineHeight: 1.6, opacity: 0.9 }}>After confirmation, the backend selects an available agent by zone and workload.</p>
+          <div className="rounded-xl border border-success-200 bg-success-50 p-5 text-sm text-surface-700 shadow-sm">
+            <div className="flex items-center gap-2 font-bold text-success-700 mb-2"><CheckCircle2 size={18} /> Auto-assignment ready</div>
+            <p className="leading-relaxed">After confirmation, the backend selects an available agent by zone and workload.</p>
           </div>
           
-          <div style={{ borderRadius: '0.75rem', border: '1px solid var(--color-surface-200)', background: 'var(--color-surface-100)', padding: '1.25rem', fontSize: '0.875rem', color: 'var(--color-surface-400)', boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', color: 'var(--color-surface-600)', marginBottom: '0.5rem' }}>
+          <div className="rounded-xl border border-surface-200 bg-surface-50 p-5 text-sm text-surface-600 shadow-sm">
+            <div className="flex items-center gap-2 font-bold text-surface-700 mb-2">
               <Truck size={18} /> Activity logging
             </div>
-            <p style={{ lineHeight: 1.6 }}>Every status change writes immutable tracking history and triggers notifications.</p>
+            <p className="leading-relaxed">Every status change writes immutable tracking history and triggers notifications.</p>
           </div>
         </aside>
       </form>

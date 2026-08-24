@@ -56,20 +56,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const links = getLinks();
 
   return (
-    <div className={`app-sidebar ${isOpen ? 'open' : ''}`}>
-      <Link to="/" style={{ height: '4rem', display: 'flex', alignItems: 'center', padding: '0 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseOver={e => (e.currentTarget.style.opacity = '0.8')} onMouseOut={e => (e.currentTarget.style.opacity = '1')}>
+    <div className={`app-sidebar ${isOpen ? 'open' : ''}`} style={{ backgroundColor: 'var(--color-surface-900)', borderRight: '1px solid var(--color-surface-800)', width: 'var(--sidebar-width)' }}>
+      <Link to="/" style={{ height: '4rem', display: 'flex', alignItems: 'center', padding: '0 1.25rem', borderBottom: '1px solid var(--color-surface-800)', textDecoration: 'none' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'white' }}>
-          <div style={{ height: '2.5rem', width: '2.5rem', borderRadius: '0.5rem', background: 'var(--color-primary-500)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Truck size={22} strokeWidth={2.5} />
+          <div style={{ height: '2rem', width: '2rem', borderRadius: '0.375rem', background: 'var(--color-primary-600)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Truck size={18} strokeWidth={2.5} />
           </div>
           <div>
-            <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.025em' }}>LastMile</span>
-            <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--color-surface-400)' }}>Delivery command</span>
+            <span style={{ display: 'block', fontSize: '1.125rem', fontWeight: 700, letterSpacing: '-0.025em', color: 'white' }}>LastMile</span>
           </div>
         </div>
       </Link>
 
-      <nav style={{ flex: 1, padding: '1.25rem 0.75rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+      <nav style={{ flex: 1, padding: '1rem 0.75rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
         {links.map((link) => (
           <NavLink
             key={link.name}
@@ -77,30 +76,43 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
             end={link.path === '/admin' || link.path === '/agent' || link.path === '/dashboard' || link.path === '/orders'}
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             onClick={() => setIsOpen(false)}
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.5rem 0.75rem',
+              borderRadius: '0.375rem',
+              textDecoration: 'none',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: isActive ? 'white' : 'var(--color-surface-400)',
+              backgroundColor: isActive ? 'var(--color-primary-600)' : 'transparent',
+              transition: 'all 0.2s'
+            })}
           >
-            <link.icon size={18} className="nav-link-icon" />
+            <link.icon size={18} />
             {link.name}
           </NavLink>
         ))}
       </nav>
 
-      <div style={{ margin: '0 0.75rem 0.75rem 0.75rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', padding: '0.75rem' }}>
-        <p style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-surface-400)' }}>Operations pulse</p>
-        <div style={{ marginTop: '0.75rem', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem', fontSize: '0.75rem' }}>
-          <div style={{ borderRadius: '0.375rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem' }}>
-            <span style={{ display: 'block', fontSize: '1.125rem', fontWeight: 'bold', color: 'white' }}>98%</span>
-            SLA
+      <div style={{ margin: '0 0.75rem 0.75rem', padding: '0.75rem', borderRadius: '0.5rem', backgroundColor: 'var(--color-surface-800)', border: '1px solid var(--color-surface-700)' }}>
+        <p style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-surface-400)', letterSpacing: '0.05em' }}>Operations pulse</p>
+        <div style={{ marginTop: '0.75rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+          <div style={{ backgroundColor: 'var(--color-surface-900)', padding: '0.5rem', borderRadius: '0.25rem', border: '1px solid var(--color-surface-700)' }}>
+            <span style={{ display: 'block', fontSize: '1rem', fontWeight: 700, color: 'white' }}>98%</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--color-surface-400)' }}>SLA</span>
           </div>
-          <div style={{ borderRadius: '0.375rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem' }}>
-            <span style={{ display: 'block', fontSize: '1.125rem', fontWeight: 'bold', color: 'white' }}>12m</span>
-            Avg assign
+          <div style={{ backgroundColor: 'var(--color-surface-900)', padding: '0.5rem', borderRadius: '0.25rem', border: '1px solid var(--color-surface-700)' }}>
+            <span style={{ display: 'block', fontSize: '1rem', fontWeight: 700, color: 'white' }}>12m</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--color-surface-400)' }}>Avg assign</span>
           </div>
         </div>
       </div>
 
-      <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', padding: '0 0.5rem' }}>
-          <div style={{ width: '2.25rem', height: '2.25rem', borderRadius: '0.375rem', background: 'var(--color-primary-500)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.875rem' }}>
+      <div style={{ padding: '1rem', borderTop: '1px solid var(--color-surface-800)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ width: '2rem', height: '2rem', borderRadius: '9999px', backgroundColor: 'var(--color-surface-700)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '0.875rem' }}>
             {user?.name?.charAt(0).toUpperCase() || 'U'}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -110,11 +122,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         </div>
         <button
           onClick={logout}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.625rem 0.75rem', width: '100%', borderRadius: '0.375rem', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-surface-300)', background: 'transparent', border: 'none', cursor: 'pointer' }}
-          onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'white'; }}
-          onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-surface-300)'; }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', padding: '0.5rem', borderRadius: '0.375rem', fontSize: '0.875rem', fontWeight: 500, color: 'var(--color-surface-400)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}
+          onMouseOver={(e) => e.currentTarget.style.color = 'white'}
+          onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-surface-400)'}
         >
-          <LogOut size={18} />
+          <LogOut size={16} />
           Sign Out
         </button>
       </div>

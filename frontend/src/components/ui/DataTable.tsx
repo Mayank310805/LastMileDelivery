@@ -36,15 +36,15 @@ export function DataTable<T extends { id: string | number }>({
 
   if (!data || data.length === 0) {
     return (
-      <div className="panel flex-col items-center justify-center text-center" style={{ padding: '3rem 1rem' }}>
-        <Inbox size={48} color="var(--color-surface-300)" style={{ margin: '0 auto 1rem auto' }} />
-        <p className="text-sm" style={{ color: 'var(--color-surface-500)' }}>{emptyMessage}</p>
+      <div className="empty-state">
+        <Inbox size={48} className="text-surface-300 mx-auto mb-4" />
+        <p className="text-surface-500">{emptyMessage}</p>
       </div>
     );
   }
 
   return (
-    <div style={{ overflowX: 'auto', borderRadius: '0.75rem', border: '1px solid rgba(255, 255, 255, 0.05)', background: 'rgba(0, 0, 0, 0.2)' }}>
+    <div className="bg-white border border-surface-200 rounded-xl overflow-x-auto shadow-sm">
       <table className="data-table">
         <thead>
           <tr>
@@ -52,10 +52,10 @@ export function DataTable<T extends { id: string | number }>({
               <th
                 key={col.key}
                 scope="col"
-                style={{ cursor: col.sortable ? 'pointer' : 'default', userSelect: 'none' }}
+                className={col.sortable ? 'cursor-pointer select-none hover:bg-surface-100 transition-colors' : ''}
                 onClick={() => col.sortable && onSort && onSort(col.key)}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <div className="flex items-center gap-1">
                   {col.header}
                   {col.sortable && sortKey === col.key && (
                     sortDirection === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />
@@ -70,7 +70,7 @@ export function DataTable<T extends { id: string | number }>({
             <tr
               key={item.id}
               onClick={() => onRowClick && onRowClick(item)}
-              className={onRowClick ? 'clickable' : ''}
+              className={onRowClick ? 'clickable cursor-pointer hover:bg-surface-50 transition-colors' : ''}
             >
               {columns.map((col) => (
                 <td key={`${item.id}-${col.key}`}>

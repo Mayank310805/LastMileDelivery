@@ -1,28 +1,18 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Plus, Users, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { apiClient } from '../../lib/apiClient';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { DataTable } from '../../components/ui/DataTable';
 
-const Header = ({ title, subtitle, icon: Icon }: any) => (
-  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', background: 'linear-gradient(to right, rgba(59,130,246,0.15), transparent)', padding: '1.5rem', borderRadius: '0.5rem', borderLeft: '4px solid var(--color-primary-500)' }}>
-    <div style={{ borderRadius: '0.75rem', background: 'var(--color-surface-200)', padding: '0.75rem', color: 'var(--color-primary-400)' }}><Icon size={28} /></div>
-    <div>
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 800, color: 'var(--color-surface-950)' }}>{title}</h1>
-      <p style={{ marginTop: '0.5rem', color: 'var(--color-surface-500)', fontSize: '1rem' }}>{subtitle}</p>
-    </div>
-  </div>
-);
-
 const Modal = ({ title, onClose, children }: any) => (
-  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-    <div className="glass-panel" style={{ width: '100%', maxWidth: '520px', position: 'relative' }}>
+  <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(4px)' }}>
+    <div className="card" style={{ width: '100%', maxWidth: '520px', position: 'relative', background: 'white', padding: '1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-surface-200)', paddingBottom: '1rem' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-surface-950)' }}>{title}</h2>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>{title}</h2>
         <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-surface-500)' }}><X size={20} /></button>
       </div>
       {children}
@@ -69,8 +59,7 @@ export const AgentManagementPage = () => {
       key: 'isAvailable',
       header: 'Availability',
       render: (item: any) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0.25rem 0.625rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, background: item.isAvailable ? 'rgba(16,185,129,0.15)' : 'var(--color-surface-100)', color: item.isAvailable ? 'var(--color-success-500)' : 'var(--color-surface-500)' }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', marginRight: '6px', background: item.isAvailable ? 'var(--color-success-500)' : 'var(--color-surface-400)' }} />
+        <span className={`badge ${item.isAvailable ? 'badge-success' : 'badge-info'}`}>
           {item.isAvailable ? 'Available' : 'Offline'}
         </span>
       )
@@ -79,20 +68,24 @@ export const AgentManagementPage = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <Header title="Agent management" subtitle="Control fleet capacity, zone assignments, and availability." icon={Users} />
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>Agent Management</h1>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Control fleet capacity, zone assignments, and availability.</p>
+      </div>
+
       <section className="glass-panel" style={{ padding: '1.5rem' }}>
         <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid var(--color-surface-200)', paddingBottom: '1rem' }}>
-          <Button className="btn-primary" onClick={() => setShowModal(true)}><Plus size={18} /> Add agent</Button>
+          <Button className="btn btn-primary" onClick={() => setShowModal(true)}><Plus size={16} style={{ marginRight: '0.5rem' }} /> Add agent</Button>
         </div>
         <DataTable columns={columns} data={agents} isLoading={isLoading} />
       </section>
 
       {showModal && (
         <Modal title="Add new delivery agent" onClose={() => setShowModal(false)}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <Input label="Full name" placeholder="e.g. Ravi Kumar" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
-            <Input label="Email" type="email" placeholder="agent@example.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
-            <Input label="Phone" placeholder="9999999999" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} required />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <Input label="Full name" placeholder="e.g. Ravi Kumar" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required className="form-input" />
+            <Input label="Email" type="email" placeholder="agent@example.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required className="form-input" />
+            <Input label="Phone" placeholder="9999999999" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} required className="form-input" />
             <Select
               label="Assign to zone"
               value={form.zoneId}
@@ -100,12 +93,12 @@ export const AgentManagementPage = () => {
               options={zones.map((z: any) => ({ value: z.id, label: `${z.name} (${z.code})` }))}
               required
             />
-            <p style={{ fontSize: '0.8rem', color: 'var(--color-surface-500)', background: 'var(--color-surface-100)', padding: '0.5rem 0.75rem', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-surface-500)', background: 'var(--color-surface-100)', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-md)' }}>
               🔑 Default password will be: <strong>Agent@1234</strong>
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-              <Button className="btn-primary" style={{ flex: 1 }} onClick={() => createMutation.mutate()} isLoading={createMutation.isPending}>Create agent</Button>
-              <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="btn btn-primary" style={{ flex: 1 }} onClick={() => createMutation.mutate()} isLoading={createMutation.isPending}>Create agent</Button>
+              <Button variant="outline" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>Cancel</Button>
             </div>
           </div>
         </Modal>

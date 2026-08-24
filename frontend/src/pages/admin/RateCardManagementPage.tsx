@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { CreditCard, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { apiClient } from '../../lib/apiClient';
 import { Button } from '../../components/ui/Button';
 import { DataTable } from '../../components/ui/DataTable';
@@ -13,11 +13,15 @@ export const RateCardManagementPage = () => {
   const rows = Array.isArray(data) ? data : [];
   
   return (
-    <div className="space-y-6 animate-fade-in">
-      <Header title="Rate cards" subtitle="Configure B2B/B2C and intra/inter-zone pricing." icon={CreditCard} />
-      <section className="glass-panel p-6 shadow-sm">
-        <div className="mb-4 flex justify-end border-b border-surface-200/50 pb-4">
-          <Button className="shadow-lg shadow-primary-500/20"><Plus size={18} /> Add rate</Button>
+    <div className="space-y-6 animate-fade-in" style={{ gap: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>Rate Cards</h1>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Configure B2B/B2C and intra/inter-zone pricing.</p>
+      </div>
+
+      <section className="glass-panel" style={{ padding: '1.5rem' }}>
+        <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid var(--color-surface-200)', paddingBottom: '1rem' }}>
+          <Button className="btn btn-primary"><Plus size={16} style={{ marginRight: '0.5rem' }} /> Add rate</Button>
         </div>
         <DataTable columns={[
           { key: 'orderType', header: 'Order type' },
@@ -31,13 +35,3 @@ export const RateCardManagementPage = () => {
     </div>
   );
 };
-
-const Header = ({ title, subtitle, icon: Icon }: any) => (
-  <div className="flex items-start gap-5 bg-gradient-to-r from-primary-50 to-transparent p-6 rounded-lg border-l-4 border-primary-500 shadow-sm">
-    <div className="rounded-xl bg-white p-3 text-primary-600 shadow-sm"><Icon size={28} /></div>
-    <div>
-      <h1 className="text-3xl font-bold text-surface-950">{title}</h1>
-      <p className="mt-2 text-surface-600 text-lg">{subtitle}</p>
-    </div>
-  </div>
-);

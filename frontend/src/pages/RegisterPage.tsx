@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Mail, Lock, User, Phone, Truck } from 'lucide-react';
+import { Mail, Lock, User, Phone, Truck, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -41,47 +41,52 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="auth-layout animate-fade-in">
-      <div className="auth-banner">
-        <div style={{ textAlign: 'center', color: 'white', maxWidth: '32rem', padding: '0 2rem', zIndex: 10 }} className="animate-fade-in delay-200">
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ width: '6rem', height: '6rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', borderRadius: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.2)', boxShadow: 'var(--shadow-neon)' }}>
-              <Truck size={48} color="white" />
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#ffffff' }}>
+      {/* LEFT: Brand Banner */}
+      <div style={{ flex: 1, backgroundColor: 'var(--color-surface-900)', background: 'linear-gradient(135deg, var(--color-surface-900) 0%, #1e293b 100%)', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem', color: 'white' }} className="hidden lg-flex">
+        <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem' }}>
+            <div style={{ width: '3rem', height: '3rem', backgroundColor: 'var(--color-primary-600)', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Truck size={24} color="white" strokeWidth={2.5} />
             </div>
+            <span style={{ fontSize: '1.5rem', fontWeight: 700 }}>LastMile</span>
           </div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1.5rem', letterSpacing: '-0.025em' }}>Join LastMile</h1>
-          <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.8)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+          
+          <h1 style={{ fontSize: '3rem', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-0.025em' }}>
+            Join LastMile
+          </h1>
+          
+          <p style={{ fontSize: '1.125rem', color: 'var(--color-surface-400)', marginBottom: '3rem', lineHeight: 1.6 }}>
             Create an account to start tracking your deliveries in real-time with precise ETAs and status updates.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', textAlign: 'left', marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2.5rem' }}>
-            <div className="animate-fade-in delay-300">
-              <h3 style={{ fontWeight: 700, color: 'white', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem' }}>
-                <span style={{ color: 'var(--color-primary-400)', textShadow: '0 0 10px var(--color-primary-400)' }}>✓</span> Fast Setup
-              </h3>
-              <p style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.7)', marginTop: '0.5rem' }}>Get started in seconds</p>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'var(--color-surface-300)' }}>
+              <CheckCircle2 size={20} color="var(--color-primary-500)" /> Fast Setup
             </div>
-            <div className="animate-fade-in delay-300">
-              <h3 style={{ fontWeight: 700, color: 'white', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem' }}>
-                <span style={{ color: 'var(--color-accent-400)', textShadow: '0 0 10px var(--color-accent-400)' }}>✓</span> Live Updates
-              </h3>
-              <p style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.7)', marginTop: '0.5rem' }}>Know exactly where it is</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'var(--color-surface-300)' }}>
+              <CheckCircle2 size={20} color="var(--color-primary-500)" /> Live Updates
             </div>
           </div>
         </div>
       </div>
 
-      <div className="auth-form-container">
-        <div className="auth-form-box animate-fade-in delay-100">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary-400)', marginBottom: '2rem' }} className="lg-hidden">
-            <Truck size={28} strokeWidth={2.5} />
-            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>LastMile</span>
+      {/* RIGHT: Form Container */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2rem' }}>
+        <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }} className="lg-hidden">
+            <div style={{ width: '2.5rem', height: '2.5rem', backgroundColor: 'var(--color-primary-600)', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Truck size={20} color="white" strokeWidth={2.5} />
+            </div>
+            <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>LastMile</span>
           </div>
 
-          <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '0.5rem' }}>Create an account</h2>
+          <h2 style={{ fontSize: '1.875rem', fontWeight: 800, color: 'var(--color-surface-900)', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>Create an account</h2>
           <p style={{ color: 'var(--color-surface-500)', marginBottom: '2.5rem', fontSize: '1rem' }}>Enter your details to get started.</p>
 
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="animate-fade-in delay-200">
+            <div>
               <Input
                 label="Full Name"
                 placeholder="John Doe"
@@ -91,7 +96,7 @@ export const RegisterPage = () => {
               />
             </div>
 
-            <div style={{ marginTop: '1.25rem' }} className="animate-fade-in delay-200">
+            <div style={{ marginTop: '1.25rem' }}>
               <Input
                 label="Email"
                 type="email"
@@ -102,7 +107,7 @@ export const RegisterPage = () => {
               />
             </div>
 
-            <div style={{ marginTop: '1.25rem' }} className="animate-fade-in delay-300">
+            <div style={{ marginTop: '1.25rem' }}>
               <Input
                 label="Phone Number"
                 type="tel"
@@ -113,7 +118,7 @@ export const RegisterPage = () => {
               />
             </div>
 
-            <div style={{ marginTop: '1.25rem' }} className="animate-fade-in delay-300">
+            <div style={{ marginTop: '1.25rem' }}>
               <Input
                 label="Password"
                 type="password"
@@ -124,16 +129,16 @@ export const RegisterPage = () => {
               />
             </div>
 
-            <div style={{ marginTop: '2.5rem' }} className="animate-fade-in delay-300">
-              <Button type="submit" className="w-full btn-primary" isLoading={isLoading} style={{ width: '100%', padding: '0.875rem' }}>
+            <div style={{ marginTop: '2.5rem' }}>
+              <Button type="submit" className="w-full btn-primary" isLoading={isLoading} style={{ width: '100%', padding: '0.625rem', fontSize: '1rem' }}>
                 Create Account
               </Button>
             </div>
           </form>
 
-          <p style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.9375rem', color: 'var(--color-surface-500)' }} className="animate-fade-in delay-300">
+          <p style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-surface-500)' }}>
             Already have an account?{' '}
-            <Link to="/login" style={{ fontWeight: 700, color: 'var(--color-primary-400)', letterSpacing: '0.025em' }}>
+            <Link to="/login" style={{ fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}>
               Sign in
             </Link>
           </p>

@@ -60,31 +60,40 @@ export const AgentOrderDetailPage = () => {
   const actions = nextStatus[order.status] || [];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
       <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-semibold text-surface-500 hover:text-surface-900 transition-colors">
         <ArrowLeft size={16} />
         Back
       </button>
       
-      <section className="glass-panel p-6 shadow-sm bg-gradient-to-r from-primary-50/50 to-transparent">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+      <section className="glass-panel p-6 shadow-sm border-l-4 border-l-primary-500 bg-gradient-to-r from-primary-50 to-transparent">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-4">
               <h1 className="text-3xl font-bold text-surface-950">{order.orderNumber}</h1>
               <StatusBadge status={order.status} />
             </div>
-            <p className="mt-2 text-surface-600 font-medium">{order.dropAddress?.line1}, {order.dropAddress?.city} - {order.dropAddress?.pincode}</p>
+            <p className="mt-3 text-lg text-surface-700">{order.dropAddress?.line1}, {order.dropAddress?.city} - {order.dropAddress?.pincode}</p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             {actions.filter((status) => status !== 'FAILED').map((status) => (
-              <Button key={status} onClick={() => mutation.mutate({ status, remarks: `Agent moved order to ${status}` })} isLoading={mutation.isPending} className="shadow-lg">
-                <CheckCircle2 size={18} />
+              <Button 
+                key={status} 
+                onClick={() => mutation.mutate({ status, remarks: `Agent moved order to ${status}` })} 
+                isLoading={mutation.isPending} 
+                className="btn-primary shadow-lg py-4 text-base w-full sm:w-auto"
+              >
+                <CheckCircle2 size={20} />
                 {status.replaceAll('_', ' ')}
               </Button>
             ))}
             {actions.includes('FAILED') && (
-              <Button variant="danger" onClick={() => setFailureOpen(true)} className="shadow-lg shadow-danger-500/20">
-                <XCircle size={18} />
+              <Button 
+                variant="danger" 
+                onClick={() => setFailureOpen(true)} 
+                className="shadow-lg py-4 text-base w-full sm:w-auto"
+              >
+                <XCircle size={20} />
                 Mark failed
               </Button>
             )}
@@ -92,22 +101,22 @@ export const AgentOrderDetailPage = () => {
         </div>
       </section>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
         <Card icon={MapPin} title="Pickup" text={`${order.pickupAddress?.line1}, ${order.pickupAddress?.pincode}`} />
         <Card icon={MapPin} title="Drop" text={`${order.dropAddress?.line1}, ${order.dropAddress?.pincode}`} />
         <Card icon={PackageCheck} title="Collection" text={order.paymentType === 'COD' ? `₹${order.totalCharge?.toFixed(2)}` : 'Prepaid order'} />
       </div>
 
       <Modal isOpen={failureOpen} onClose={() => setFailureOpen(false)} title="Failure reason">
-        <div className="space-y-4">
-          <Select label="Reason" value={failureReason} onChange={(event) => setFailureReason(event.target.value)} options={[
+        <div className="space-y-5 mt-2">
+          <Select label="Select reason for failure" value={failureReason} onChange={(event) => setFailureReason(event.target.value)} options={[
             { value: 'CUSTOMER_UNAVAILABLE', label: 'Customer unavailable' },
             { value: 'ADDRESS_NOT_FOUND', label: 'Address not found' },
             { value: 'PAYMENT_DECLINED', label: 'Payment declined' },
-          ]} />
-          <div className="flex justify-end gap-3 pt-2 border-t border-surface-200">
-            <Button variant="outline" onClick={() => setFailureOpen(false)}>Cancel</Button>
-            <Button variant="danger" isLoading={mutation.isPending} onClick={() => mutation.mutate({ status: 'FAILED', failureReason, remarks: 'Delivery attempt failed' })}>Submit failure</Button>
+          ]} className="w-full" />
+          <div className="flex justify-end gap-3 pt-4 border-t border-surface-200">
+            <Button variant="outline" onClick={() => setFailureOpen(false)} className="px-6">Cancel</Button>
+            <Button variant="danger" isLoading={mutation.isPending} onClick={() => mutation.mutate({ status: 'FAILED', failureReason, remarks: 'Delivery attempt failed' })} className="px-6">Submit failure</Button>
           </div>
         </div>
       </Modal>
@@ -116,11 +125,12 @@ export const AgentOrderDetailPage = () => {
 };
 
 const Card = ({ icon: Icon, title, text }: any) => (
-  <section className="glass-panel p-6 shadow-sm hover:shadow-md transition-shadow">
-    <div className="rounded-full bg-primary-50 p-3 w-fit text-primary-600 mb-4">
-      <Icon size={24} />
+  <section className="glass-panel p-6 shadow-sm border border-surface-200 hover:shadow-md transition-all duration-200 bg-white">
+    <div className="rounded-xl bg-primary-50 p-4 w-fit text-primary-600 mb-5 shadow-sm inline-flex items-center justify-center">
+      <Icon size={28} />
     </div>
-    <h2 className="font-bold text-surface-950 text-lg">{title}</h2>
-    <p className="mt-2 text-surface-600 font-medium">{text}</p>
+    <h2 className="font-bold text-surface-950 text-xl">{title}</h2>
+    <p className="mt-3 text-surface-700 font-medium leading-relaxed">{text}</p>
   </section>
 );
+

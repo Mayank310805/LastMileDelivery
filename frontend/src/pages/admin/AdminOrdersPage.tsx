@@ -24,11 +24,11 @@ export const AdminOrdersPage = () => {
 
   return (
     <div className="space-y-6 animate-fade-in" style={{ gap: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, transparent 100%)', padding: '1.5rem', borderRadius: '0.75rem', borderLeft: '4px solid var(--color-primary-500)', boxShadow: 'var(--shadow-sm)' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>All orders</h1>
-        <p style={{ color: 'var(--color-surface-600)', fontSize: '1rem' }}>Audit every delivery, assignment, customer, and exception.</p>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>All Orders</h1>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Audit every delivery, assignment, customer, and exception.</p>
       </div>
-      <section className="glass-panel p-6 shadow-sm">
+      <section className="glass-panel">
         <DataTable columns={columns} data={orders} isLoading={isLoading} onRowClick={(row: any) => navigate(`/admin/orders/${row.id}`)} />
       </section>
     </div>

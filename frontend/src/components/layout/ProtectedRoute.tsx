@@ -14,8 +14,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50">
-        <Loader2 className="h-8 w-8 text-primary-600 animate-spin" />
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-surface-50)' }}>
+        <Loader2 size={32} color="var(--color-primary-600)" style={{ animation: 'spin 1s linear infinite' }} />
       </div>
     );
   }

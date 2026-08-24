@@ -23,14 +23,14 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="modal-overlay">
       <div 
-        className="fixed inset-0 bg-surface-900/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0"
         onClick={onClose}
       />
       
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md animate-scale-in overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="px-6 py-4 border-b border-surface-200 flex items-center justify-between">
+      <div className="modal-content relative animate-scale-in">
+        <div className="modal-header">
           <h3 className="text-lg font-semibold text-surface-900">{title}</h3>
           <button
             onClick={onClose}
@@ -40,7 +40,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
           </button>
         </div>
         
-        <div className="p-6 overflow-y-auto">
+        <div className="modal-body">
           {children}
         </div>
       </div>

@@ -22,10 +22,10 @@ export const AgentOrdersPage = () => {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in" style={{ gap: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, transparent 100%)', padding: '1.5rem', borderRadius: '0.75rem', borderLeft: '4px solid var(--color-primary-500)', boxShadow: 'var(--shadow-sm)' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>My deliveries</h1>
-        <p style={{ color: 'var(--color-surface-600)', fontSize: '1rem' }}>Assigned orders sorted by most recent dispatch.</p>
+    <div className="flex flex-col gap-6 animate-fade-in">
+      <div className="bg-gradient-to-r from-primary-50 to-transparent p-6 rounded-xl border-l-4 border-l-primary-500 shadow-sm glass-panel">
+        <h1 className="text-3xl font-bold text-surface-950 mb-2">My deliveries</h1>
+        <p className="text-surface-600 text-lg">Assigned orders sorted by most recent dispatch.</p>
       </div>
       <section className="glass-panel p-6 shadow-sm">
         <DataTable columns={columns} data={orders} isLoading={isLoading} onRowClick={(row: any) => navigate(`/agent/orders/${row.id}`)} />
@@ -33,3 +33,4 @@ export const AgentOrdersPage = () => {
     </div>
   );
 };
+

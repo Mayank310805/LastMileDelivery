@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Mail, Lock, Truck } from 'lucide-react';
+import { Mail, Lock, Truck, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -43,41 +43,55 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="auth-layout animate-fade-in">
-      <div className="auth-banner">
-        <div style={{ textAlign: 'center', color: 'white', maxWidth: '32rem', padding: '0 2rem', zIndex: 10 }} className="animate-fade-in delay-200">
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ width: '6rem', height: '6rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', borderRadius: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.2)', boxShadow: 'var(--shadow-neon)' }}>
-              <Truck size={48} color="white" />
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#ffffff' }}>
+      {/* LEFT: Brand Banner */}
+      <div style={{ flex: 1, backgroundColor: 'var(--color-surface-900)', background: 'linear-gradient(135deg, var(--color-surface-900) 0%, #1e293b 100%)', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem', color: 'white' }} className="hidden lg-flex">
+        <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem' }}>
+            <div style={{ width: '3rem', height: '3rem', backgroundColor: 'var(--color-primary-600)', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Truck size={24} color="white" strokeWidth={2.5} />
             </div>
+            <span style={{ fontSize: '1.5rem', fontWeight: 700 }}>LastMile</span>
           </div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1.5rem', letterSpacing: '-0.025em' }}>LastMile Tracker</h1>
-          <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.8)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-            The premium solution for managing deliveries, dispatching agents, and tracking orders in real-time.
+          
+          <h1 style={{ fontSize: '3rem', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-0.025em' }}>
+            Deliver better.<br/>Operate smarter.
+          </h1>
+          
+          <p style={{ fontSize: '1.125rem', color: 'var(--color-surface-400)', marginBottom: '3rem', lineHeight: 1.6 }}>
+            The complete solution for managing deliveries, dispatching agents, and tracking orders in real-time.
           </p>
-          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 600, color: 'white' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', padding: '0.75rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <span style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: 'var(--color-primary-400)', boxShadow: '0 0 10px var(--color-primary-400)' }}></span> Real-time Tracking
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', padding: '0.75rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <span style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: 'var(--color-accent-400)', boxShadow: '0 0 10px var(--color-accent-400)' }}></span> Smart Dispatch
-            </span>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'var(--color-surface-300)' }}>
+              <CheckCircle2 size={20} color="var(--color-primary-500)" /> Real-time Tracking & ETAs
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'var(--color-surface-300)' }}>
+              <CheckCircle2 size={20} color="var(--color-primary-500)" /> Smart Agent Dispatching
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'var(--color-surface-300)' }}>
+              <CheckCircle2 size={20} color="var(--color-primary-500)" /> Route Optimization
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="auth-form-container">
-        <div className="auth-form-box animate-fade-in delay-100">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary-400)', marginBottom: '2rem' }} className="lg-hidden">
-            <Truck size={28} strokeWidth={2.5} />
-            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>LastMile</span>
+      {/* RIGHT: Form Container */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2rem' }}>
+        <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }} className="lg-hidden">
+            <div style={{ width: '2.5rem', height: '2.5rem', backgroundColor: 'var(--color-primary-600)', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Truck size={20} color="white" strokeWidth={2.5} />
+            </div>
+            <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>LastMile</span>
           </div>
 
-          <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '0.5rem' }}>Welcome back</h2>
+          <h2 style={{ fontSize: '1.875rem', fontWeight: 800, color: 'var(--color-surface-900)', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>Welcome back</h2>
           <p style={{ color: 'var(--color-surface-500)', marginBottom: '2.5rem', fontSize: '1rem' }}>Please enter your details to sign in.</p>
 
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="animate-fade-in delay-200">
+            <div>
               <Input
                 label="Email"
                 type="email"
@@ -88,7 +102,7 @@ export const LoginPage = () => {
               />
             </div>
 
-            <div style={{ marginTop: '1.25rem' }} className="animate-fade-in delay-300">
+            <div style={{ marginTop: '1.25rem' }}>
               <Input
                 label="Password"
                 type="password"
@@ -99,16 +113,16 @@ export const LoginPage = () => {
               />
             </div>
 
-            <div style={{ marginTop: '2.5rem' }} className="animate-fade-in delay-300">
-              <Button type="submit" className="w-full btn-primary" isLoading={isLoading} style={{ width: '100%', padding: '0.875rem' }}>
+            <div style={{ marginTop: '2.5rem' }}>
+              <Button type="submit" className="w-full btn-primary" isLoading={isLoading} style={{ width: '100%', padding: '0.625rem', fontSize: '1rem' }}>
                 Sign In
               </Button>
             </div>
           </form>
 
-          <p style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.9375rem', color: 'var(--color-surface-500)' }} className="animate-fade-in delay-300">
+          <p style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-surface-500)' }}>
             Don't have an account?{' '}
-            <Link to="/register" style={{ fontWeight: 700, color: 'var(--color-primary-400)', letterSpacing: '0.025em' }}>
+            <Link to="/register" style={{ fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}>
               Sign up
             </Link>
           </p>

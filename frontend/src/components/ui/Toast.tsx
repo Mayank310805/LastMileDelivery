@@ -7,11 +7,13 @@ export const Toaster = () => {
       toastOptions={{
         duration: 4000,
         style: {
-          background: 'var(--color-surface-900)',
-          color: '#fff',
+          background: '#fff',
+          color: 'var(--color-surface-900)',
+          border: '1px solid var(--color-surface-200)',
           padding: '12px 16px',
           borderRadius: '8px',
           fontSize: '14px',
+          boxShadow: 'var(--shadow-md)',
         },
         success: {
           iconTheme: {

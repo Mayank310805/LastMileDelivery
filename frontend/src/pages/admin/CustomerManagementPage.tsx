@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { Contact } from 'lucide-react';
 import { apiClient } from '../../lib/apiClient';
 import { DataTable } from '../../components/ui/DataTable';
 
@@ -15,9 +14,12 @@ export const CustomerManagementPage = () => {
   });
   const rows = Array.isArray(data) && data.length > 0 ? data : demoCustomers;
   return (
-    <div className="space-y-6">
-      <Header title="Customer management" subtitle="Inspect customer accounts and their delivery history." icon={Contact} />
-      <section className="panel rounded-lg p-5">
+    <div className="space-y-6" style={{ gap: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>Customer Management</h1>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Inspect customer accounts and their delivery history.</p>
+      </div>
+      <section className="glass-panel" style={{ padding: '1.5rem' }}>
         <DataTable columns={[
           { key: 'name', header: 'Customer' },
           { key: 'email', header: 'Email' },
@@ -28,10 +30,3 @@ export const CustomerManagementPage = () => {
     </div>
   );
 };
-
-const Header = ({ title, subtitle, icon: Icon }: any) => (
-  <div className="flex items-start gap-4">
-    <div className="rounded-lg bg-primary-50 p-3 text-primary-700"><Icon size={24} /></div>
-    <div><h1 className="text-3xl font-bold text-surface-950">{title}</h1><p className="mt-2 text-surface-500">{subtitle}</p></div>
-  </div>
-);
