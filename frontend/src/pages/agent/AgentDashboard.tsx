@@ -10,9 +10,10 @@ import { useAuth } from '../../context/AuthContext';
 export const AgentDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ['agent-orders'],
     queryFn: () => apiClient.get('/agents/me/orders').then((res: any) => res.data),
+    refetchInterval: 15000,
   });
   
   const orders = Array.isArray(data) ? data : [];
@@ -26,8 +27,9 @@ export const AgentDashboard = () => {
             <h1 className="mt-2 text-3xl font-bold text-surface-950">
               Good morning, {user?.name || 'Agent'}
             </h1>
-            <p className="mt-3 text-lg text-surface-600">
-              Ready for today's deliveries?
+            <p className="mt-2 text-surface-600 text-sm font-medium flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
+              Live sync active • Last updated {new Date(dataUpdatedAt || Date.now()).toLocaleTimeString()}
             </p>
           </div>
           <Button onClick={() => navigate('/agent/orders')} className="btn-primary shadow-lg text-white w-full lg:w-auto mt-4 lg:mt-0">

@@ -15,11 +15,13 @@ export const AdminDashboard = () => {
   const { data: dashboardData, isLoading: isLoadingKpi } = useQuery({
     queryKey: ['admin-dashboard'],
     queryFn: () => apiClient.get('/admin/dashboard').then((res: any) => res.data),
+    refetchInterval: 15000,
   });
 
   const { data: ordersData, isLoading: isLoadingOrders } = useQuery({
     queryKey: ['admin-orders'],
     queryFn: () => apiClient.get('/admin/orders').then((res: any) => res.data),
+    refetchInterval: 15000,
   });
   
   const orders = Array.isArray(ordersData) ? ordersData : [];
@@ -47,7 +49,10 @@ export const AdminDashboard = () => {
       <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-surface-900)' }}>Operations Dashboard</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem' }}>Monitor pricing, dispatch, exceptions, and configuration.</p>
+          <p style={{ fontSize: '0.875rem', color: 'var(--color-surface-500)', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-success-500)', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+            Live sync active • Monitor pricing, dispatch, and exceptions.
+          </p>
         </div>
         <Button onClick={() => assignAll.mutate()} isLoading={assignAll.isPending} className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
           <RadioTower size={16} style={{ marginRight: '0.5rem' }} />

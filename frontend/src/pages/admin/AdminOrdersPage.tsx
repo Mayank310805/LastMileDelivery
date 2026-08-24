@@ -9,6 +9,7 @@ export const AdminOrdersPage = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-orders'],
     queryFn: () => apiClient.get('/admin/orders').then((res: any) => res.data),
+    refetchInterval: 15000,
   });
   
   const orders = Array.isArray(data) ? data : [];
